@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tests are here</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Tests are here</h1>
+        <button type="button" name="run-now">▶️</button>
+        <p name="run-status"></p>
+        <pre name="run-output"></pre>
+
+
+        <script type="module">
+            let runStatusEl = document.querySelector("p[name=run-status]")
+            let runOutputEl = document.querySelector("pre[name=run-output]")
+
+            let cacheBuster = Date.now()
+            let testsAreRunning = false
+
+            document.querySelector("button[name=run-now]").addEventListener("click", async _ => {
+                if (!testsAreRunning) {
+                    try {
+                        let importedModule = await import("./index.js?v=" + cacheBuster++)
+                        runStatusEl.innerText = "Running tests..."
+                        testsAreRunning = true
+                        let result = await importedModule.runTests()
+                        runOutputEl.innerText = result
+                    } catch (err) {
+                        runOutputEl.innerText = "Last run failed: " + err.message
+                    } finally {
+                        testsAreRunning = false
+                        runStatusEl.innerText = ""
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
