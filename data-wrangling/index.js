@@ -6,15 +6,16 @@ const SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE = {
     "pmid": "PUBMED_ID"
 }
 
-let matchXmlLevel = (innerText, rootElementName, text) => {
+let matchXmlLevel = (innerText, attributesText, rootElementName, text) => {
     let res = {
         name: rootElementName || "document",
         text: text,
         innerText: innerText,
+        attrText: attributesText,
         children: []
     }
-    for (const match of innerText.matchAll(/<(.*?)(?: (?:.*?))?>(.*?)<\/\1>/gs)) {
-        res.children.push(matchXmlLevel(match[2], match[1], match[0]))
+    for (const match of innerText.matchAll(/<(.*?)(?: (.*?))?>(.*?)<\/\1>/gs)) {
+        res.children.push(matchXmlLevel(match[3], match[2], match[1], match[0]))
     }
     return res
 }
@@ -57,9 +58,44 @@ export function normalizeSwepub(data) {
             }
         }
 
-        for (const personEl of modsEl.children.filter(x => x.name === "personal")) {
-            // Persons.PersonData.FirstName, Persons.PersonData.LastName, Persons.PersonData.BirthYear
-            // Persons.Organizations.OrganizationData.Identifiers.Type.Value, Persons.Organizations.OrganizationData.Identifiers.Value
+        res.Persons = []
+        for (const personEl of modsEl.children.filter(x => x.name === "name")) {
+            let personOrgRole = {
+                PersonData: {
+                    FirstName: (personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1],
+                    LastName: (personEl.innerText.match(/<namePart type="family">(.*?)<\/namePart>/s) || [])[1],
+                    BirthYear: parseInt((personEl.innerText.match(/<namePart type="date">(.*?)<\/namePart>/s) || [])[1]) || undefined,
+                    Organizations: []
+                }
+            }
+
+            let affOrgLookup = new Map()
+            for (const affOrgEl of personEl.children.filter(x => x.name === "affiliation")) {
+                let id = (affOrgEl.attrText.match(/valueURI="(.*?)"/s) || [])[1]
+                if (id) {
+                    let affOrg = affOrgLookup.get(id) || {OrganizationData:{Identifiers:[]}}
+                    let lang = (affOrgEl.attrText.match(/lang="(.*?)"/s) || [])[1]
+                    if (lang === "swe") {
+                        affOrg.OrganizationData.NameSwe = affOrgEl.innerText
+                    } else if (lang === "eng") {
+                        affOrg.OrganizationData.NameEng = affOrgEl.innerText
+                    }
+
+                    if (!affOrg.OrganizationData.Identifiers.find(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === id)) {
+                        affOrg.OrganizationData.Identifiers.push({
+                            Type: {
+                                Value: "SWEPUB_AFF_ID"
+                            },
+                            Value: id
+                        })
+                    }
+
+                    affOrgLookup.set(id, affOrg)
+                }
+            }
+            personOrgRole.Organizations = [...affOrgLookup.values()]
+            
+            res.Persons.push(personOrgRole)
         }
     }
 
@@ -69,7 +105,7 @@ export function normalizeSwepub(data) {
 export async function findDifferences(normalizedData, esPost) {
     let res = {
         description: "Unknown difference.",
-        meta: normalizedData.__meta,
+        source: normalizedData.__meta,
         connected: []
     }
 
@@ -116,12 +152,16 @@ export async function findDifferences(normalizedData, esPost) {
 
     if (!connectedPublications?.hits?.total) {
         // We found no connected publications
-
+        res.description = "Found no publications connected to the source data."
     } else if (connectedPublications.hits.total === 1) {
         // We found one connected publication
-
+        res.description = "Found one publication connected to the source data."
+        res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
     } else {
         // We found more than one connected publication
-
+        res.description = "Found multiple publications connected to the source data."
+        res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
     }
+
+    return res
 }

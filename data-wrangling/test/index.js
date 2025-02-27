@@ -34,9 +34,19 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.Identifiers.some(idObj => idObj.Type.Value === "WOS_ID" && idObj.Value === "123456789098765")))
             errors.push(is(normalizedData, pub => !pub.Identifiers.some(idObj => idObj.Type.Value === "ISSN" && idObj.Value === "0001-1234")))
             errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.FirstName === "Fejk" && pub.Persons[0].PersonData.LastName === "Fejksson"))
-            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[0].OrganizationData.Identifiers.some(idObj => idObj.Type.Value === "PUBMED_ID" && idObj.Value === "12345678")
-            // Persons.PersonData.FirstName, Persons.PersonData.LastName, Persons.PersonData.BirthYear
-            // Persons.Organizations.OrganizationData.Identifiers.Type.Value, Persons.Organizations.OrganizationData.Identifiers.Value
+            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[0].OrganizationData.NameSwe === "Fejkuniversitet"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[0].OrganizationData.NameEng === "Fake University"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[1].OrganizationData.NameSwe === "Institutionen f&#246;r tester som är fejk"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[1].OrganizationData.NameEng === "Department of testing that is fake"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[1].OrganizationData.Identifiers.some(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === "fejku.lib.chalmers.se/0001")))
+            errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[0].OrganizationData.NameSwe === "Fejkuniversitet"))
+            errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[0].OrganizationData.NameEng === "Fake University"))
+            errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[1].OrganizationData.NameSwe === "Institutionen f&#246;r tester som är ganska fejk"))
+            errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[1].OrganizationData.NameEng === "Department of testing that is pretty fake"))
+            errors.push(is(normalizedData, pub => pub.Persons[1].PersonData.FirstName === "Fjek" && pub.Persons[1].PersonData.LastName === "Fjeksson" && pub.Persons[1].PersonData.BirthYear === 1972))
+            errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[1].OrganizationData.Identifiers.some(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === "fejku.lib.chalmers.se/0002")))
+            errors.push(is(normalizedData, pub => pub.Persons[2].PersonData.FirstName === "Anon" && pub.Persons[2].PersonData.LastName === "Fejko"))
+            errors.push(is(normalizedData, pub => pub.Persons[3].PersonData.FirstName === "Nymus" && pub.Persons[3].PersonData.LastName === "Fjeko"))
 
             errors = errors.filter(x => x.trim())
 

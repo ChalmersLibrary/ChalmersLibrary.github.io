@@ -51,8 +51,8 @@
                 <nameIdentifier type="fejku">fejky</nameIdentifier>
                 <affiliation lang="swe" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fejkuniversitet</affiliation>
                 <affiliation lang="eng" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fake University</affiliation>
-                <affiliation lang="swe" authority="fejk.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0002">Institutionen f&#246;r tester som är ganska fejk</affiliation>
-                <affiliation lang="eng" authority="fejk.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0002">Department of testing that is pretty fake</affiliation>
+                <affiliation lang="swe" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0002">Institutionen f&#246;r tester som är ganska fejk</affiliation>
+                <affiliation lang="eng" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0002">Department of testing that is pretty fake</affiliation>
             </name>
             <name type="personal">
                 <namePart type="given">Anon</namePart>
