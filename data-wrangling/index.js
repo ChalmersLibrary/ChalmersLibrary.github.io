@@ -103,7 +103,7 @@ export function normalizeSwepub(data) {
 }
 
 export async function findDifferences(normalizedData, esPost) {
-    let res = []
+    let res = {diffs:[]}
     
     if (normalizedData.__meta.status !== "deleted") {
         // Use identifiers to try to find connected existing publications
@@ -149,7 +149,7 @@ export async function findDifferences(normalizedData, esPost) {
 
         if (!connectedPublications?.hits?.total) {
             // We found no connected publications
-            res.push({
+            res.diffs.push({
                 description: "Found no publications connected to the source data.",
                 source: normalizedData.__meta,
                 connected: [],
