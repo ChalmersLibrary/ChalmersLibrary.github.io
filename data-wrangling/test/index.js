@@ -68,6 +68,29 @@ const TESTS = [
 
             return errors.length === 0 ? "OK" : errors.join("\n")
         }
+    },{
+        name: "Find differences, all identifiers in query, no hit",
+        fn: async function () {
+            let response = await fetch("data/1.xml")
+            let textData = await response.text()
+            let normalizedData = this.normalizeSwepub(textData)
+
+            let shouldQueryArr = []
+            let diffResult = await this.findDifferences(normalizedData, (path, data) => {
+                shouldQueryArr = data?.query?.nested?.query?.bool?.should
+                return {hits:{total:0}}
+            })
+            
+            let errors = []
+            errors.push(is(shouldQueryArr, arr => arr[0]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "PUBMED_ID" && arr[0]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678"))
+            errors.push(is(shouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
+            errors.push(is(shouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "WOS_ID" && arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "123456789098765"))
+            errors.push(is(shouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
+            errors.push(is(diffResult?.connected, "length", 0))
+            errors = errors.filter(x => x.trim())
+
+            return errors.length === 0 ? "OK" : errors.join("\n")
+        }
     }
 ]
 
