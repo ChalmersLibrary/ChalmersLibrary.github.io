@@ -76,7 +76,7 @@ const TESTS = [
             let normalizedData = this.normalizeSwepub(textData)
 
             let shouldQueryArr = []
-            let diffResult = await this.findDifferences(normalizedData, (path, data) => {
+            let diffs = await this.findDifferences(normalizedData, (path, data) => {
                 shouldQueryArr = data?.query?.nested?.query?.bool?.should
                 return {hits:{total:0}}
             })
@@ -86,7 +86,8 @@ const TESTS = [
             errors.push(is(shouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
             errors.push(is(shouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "WOS_ID" && arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "123456789098765"))
             errors.push(is(shouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
-            errors.push(is(diffResult?.connected, "length", 0))
+            errors.push(is(diffs, "length", 1))
+            errors.push(is(diffs[0].connected, "length", 0))
             errors = errors.filter(x => x.trim())
 
             return errors.length === 0 ? "OK" : errors.join("\n")
@@ -108,7 +109,7 @@ const TESTS = [
             } catch (err) {
                 errors.push("Find differences method crashed.")
             }
-            errors.push(is(diffResult, val => !val))
+            errors.push(is(diffResult, val => Array.isArray(val) && val.length === 0))
             errors = errors.filter(x => x.trim())
             return errors.length === 0 ? "OK" : errors.join("\n")
         }

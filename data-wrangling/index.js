@@ -103,15 +103,9 @@ export function normalizeSwepub(data) {
 }
 
 export async function findDifferences(normalizedData, esPost) {
-    let res
+    let res = []
     
     if (normalizedData.__meta.status !== "deleted") {
-        res = {
-            description: "Unknown difference.",
-            source: normalizedData.__meta,
-            connected: []
-        }
-
         // Use identifiers to try to find connected existing publications
         let connectedPublications
         let should = normalizedData.Identifiers.map(idObj => {
@@ -155,21 +149,24 @@ export async function findDifferences(normalizedData, esPost) {
 
         if (!connectedPublications?.hits?.total) {
             // We found no connected publications
-            res.description = "Found no publications connected to the source data."
+            res.push({
+                description: "Found no publications connected to the source data.",
+                source: normalizedData.__meta,
+                connected: [],
+                type: "NEW_IDS"
+            })
         } else if (connectedPublications.hits.total === 1) {
             // We found one connected publication
-            res.description = "Found one publication connected to the source data."
-            res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+            // description = "Found one publication connected to the source data."
+            // connected = connectedPublications.hits.hits.map(x => x._source.Id)
 
             // TODO: Calculate diffs, for now we return no diff
-            res = undefined
         } else {
             // We found more than one connected publication
-            res.description = "Found multiple publications connected to the source data."
-            res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+            // description = "Found multiple publications connected to the source data."
+            // connected = connectedPublications.hits.hits.map(x => x._source.Id)
 
             // TODO: Handle this later, this is another type of diff
-            res = undefined
         }
     }
 
