@@ -160,10 +160,16 @@ export async function findDifferences(normalizedData, esPost) {
             // We found one connected publication
             res.description = "Found one publication connected to the source data."
             res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+
+            // TODO: Calculate diffs, for now we return no diff
+            res = undefined
         } else {
             // We found more than one connected publication
             res.description = "Found multiple publications connected to the source data."
             res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+
+            // TODO: Handle this later, this is another type of diff
+            res = undefined
         }
     }
 
