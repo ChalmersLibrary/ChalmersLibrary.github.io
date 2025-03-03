@@ -103,64 +103,68 @@ export function normalizeSwepub(data) {
 }
 
 export async function findDifferences(normalizedData, esPost) {
-    let res = {
-        description: "Unknown difference.",
-        source: normalizedData.__meta,
-        connected: []
-    }
-
-    // Use identifiers to try to find connected existing publications
-    let connectedPublications
-    let should = normalizedData.Identifiers.map(idObj => {
-        return {
-            bool: {
-                must: [
-                    {
-                        term: {
-                            "Identifiers.Type.Value.keyword": {
-                                value: idObj.Type.Value
-                            }
-                        }
-                    },{
-                        term: {
-                            "Identifiers.Value.keyword": {
-                                value: idObj.Value
-                            }
-                        }
-                    }
-                ]
-            }
+    let res
+    
+    if (normalizedData.__meta.status !== "deleted") {
+        res = {
+            description: "Unknown difference.",
+            source: normalizedData.__meta,
+            connected: []
         }
-    })
 
-    if (should.length > 0) {
-        connectedPublications = await esPost("/research-publications/_search", {
-            size: 1000,
-            _source: ["Id"],
-            query: {
-                nested: {
-                    path: "Identifiers",
-                    query: {
-                        bool: {
-                            should
+        // Use identifiers to try to find connected existing publications
+        let connectedPublications
+        let should = normalizedData.Identifiers.map(idObj => {
+            return {
+                bool: {
+                    must: [
+                        {
+                            term: {
+                                "Identifiers.Type.Value.keyword": {
+                                    value: idObj.Type.Value
+                                }
+                            }
+                        },{
+                            term: {
+                                "Identifiers.Value.keyword": {
+                                    value: idObj.Value
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
             }
         })
-    }
 
-    if (!connectedPublications?.hits?.total) {
-        // We found no connected publications
-        res.description = "Found no publications connected to the source data."
-    } else if (connectedPublications.hits.total === 1) {
-        // We found one connected publication
-        res.description = "Found one publication connected to the source data."
-        res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
-    } else {
-        // We found more than one connected publication
-        res.description = "Found multiple publications connected to the source data."
-        res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+        if (should.length > 0) {
+            connectedPublications = await esPost("/research-publications/_search", {
+                size: 1000,
+                _source: ["Id"],
+                query: {
+                    nested: {
+                        path: "Identifiers",
+                        query: {
+                            bool: {
+                                should
+                            }
+                        }
+                    }
+                }
+            })
+        }
+
+        if (!connectedPublications?.hits?.total) {
+            // We found no connected publications
+            res.description = "Found no publications connected to the source data."
+        } else if (connectedPublications.hits.total === 1) {
+            // We found one connected publication
+            res.description = "Found one publication connected to the source data."
+            res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+        } else {
+            // We found more than one connected publication
+            res.description = "Found multiple publications connected to the source data."
+            res.connected = connectedPublications.hits.hits.map(x => x._source.Id)
+        }
     }
 
     return res

@@ -91,6 +91,27 @@ const TESTS = [
 
             return errors.length === 0 ? "OK" : errors.join("\n")
         }
+    },{
+        name: "Find differences, status deleted, no crash",
+        fn: async function () {
+            let response = await fetch("data/2.xml")
+            let textData = await response.text()
+            let normalizedData = this.normalizeSwepub(textData)
+            
+            let diffResult
+            let errors = []
+            errors = errors.filter(x => x.trim())
+            try {
+                diffResult = await this.findDifferences(normalizedData, (path, data) => {
+                    return {hits:{total:0}}
+                })
+            } catch (err) {
+                errors.push("Find differences method crashed.")
+            }
+            errors.push(is(diffResult, val => !val))
+            errors = errors.filter(x => x.trim())
+            return errors.length === 0 ? "OK" : errors.join("\n")
+        }
     }
 ]
 
