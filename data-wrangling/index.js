@@ -20,10 +20,10 @@ let matchXmlLevel = (innerText, attributesText, rootElementName, text) => {
     return res
 }
 
-export function normalizeSwepub(data, source) {
+export function normalizeSwepub(data, name) {
     let res = {
         __meta:{
-            source,
+            name,
             method: "normalizeSwepub"
         }
     }

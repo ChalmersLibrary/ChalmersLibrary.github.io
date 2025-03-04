@@ -27,7 +27,7 @@ const TESTS = [
             errors.push(is(normalizedData.__meta, "status", "unknown"))
             errors.push(is(normalizedData.__meta, "id", "oai:fejku.lib.chalmers.se/12345"))
             errors.push(is(normalizedData.__meta, "datestamp", "2024-01-21T21:56:02Z"))
-            errors.push(is(normalizedData.__meta, "source", "FEJKKÄLLAN"))
+            errors.push(is(normalizedData.__meta, "name", "FEJKKÄLLAN"))
             errors.push(is(normalizedData.__meta, "method", "normalizeSwepub"))
             errors.push(is(normalizedData, "Title", "Den bästa fejktiteln."))
             errors.push(is(normalizedData, "Year", 2008))
