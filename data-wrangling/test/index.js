@@ -21,12 +21,15 @@ const TESTS = [
         fn: async function () {
             let response = await fetch("data/1.xml")
             let textData = await response.text()
-            let normalizedData = this.normalizeSwepub(textData)
+            let normalizedData = this.normalizeSwepub(textData, "FEJKKÄLLAN")
         
             let errors = []
             errors.push(is(normalizedData.__meta, "status", "unknown"))
             errors.push(is(normalizedData.__meta, "id", "oai:fejku.lib.chalmers.se/12345"))
             errors.push(is(normalizedData.__meta, "datestamp", "2024-01-21T21:56:02Z"))
+            errors.push(is(normalizedData.__meta, "source", "FEJKKÄLLAN"))
+            errors.push(is(normalizedData.__meta, "method", "normalizeSwepub"))
+            errors.push(is(normalizedData, "Title", "Den bästa fejktiteln."))
             errors.push(is(normalizedData, "Year", 2008))
             errors.push(is(normalizedData, pub => pub.Identifiers.some(idObj => idObj.Type.Value === "DOI" && idObj.Value === "10.1234/fejk.1234")))
             errors.push(is(normalizedData, pub => pub.Identifiers.some(idObj => idObj.Type.Value === "PUBMED_ID" && idObj.Value === "12345678")))
@@ -88,6 +91,8 @@ const TESTS = [
             errors.push(is(shouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
             errors.push(is(findDiffsResponse.diffs, "length", 1))
             errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
+            errors.push(is(findDiffsResponse.diffs[0], "type", "NEW_IDS"))
+            errors.push(is(findDiffsResponse.diffs[0], "prio", 0))
             errors = errors.filter(x => x.trim())
 
             return errors.length === 0 ? "OK" : errors.join("\n")

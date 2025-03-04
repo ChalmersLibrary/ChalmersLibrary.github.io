@@ -20,9 +20,10 @@ let matchXmlLevel = (innerText, attributesText, rootElementName, text) => {
     return res
 }
 
-export function normalizeSwepub(data) {
+export function normalizeSwepub(data, source) {
     let res = {
         __meta:{
+            source,
             method: "normalizeSwepub"
         }
     }
@@ -40,6 +41,8 @@ export function normalizeSwepub(data) {
     let metadataEl = recordEl.children.find(x => x.name === "metadata")
     if (metadataEl) {
         let modsEl = metadataEl.children.find(x => x.name === "mods")
+
+        res.Title = modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText
 
         let originInfoEl = modsEl.children.find(x => x.name == "originInfo")
         let dateIssuedEl = originInfoEl.children.find(x => x.name == "dateIssued")
@@ -153,7 +156,8 @@ export async function findDifferences(normalizedData, esPost) {
                 description: "Found no publications connected to the source data.",
                 source: normalizedData.__meta,
                 connected: [],
-                type: "NEW_IDS"
+                type: "NEW_IDS",
+                prio: 0
             })
         } else if (connectedPublications.hits.total === 1) {
             // We found one connected publication
