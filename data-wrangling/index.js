@@ -153,7 +153,9 @@ export async function findDifferences(normalizedData, esPost) {
         if (!connectedPublications?.hits?.total) {
             // We found no connected publications
             res.diffs.push({
-                description: "Found no publications connected to the source data.",
+                title: normalizedData.Title,
+                description: "Found no publications connected to the source data which contains identifiers: " +
+                    normalizedData.Identifiers.map(idObj => idObj.Type.Value + ":" + idObj.Value).join(", ") + ".",
                 source: normalizedData.__meta,
                 connected: [],
                 type: "NEW_IDS",

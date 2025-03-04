@@ -93,6 +93,7 @@ const TESTS = [
             errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
             errors.push(is(findDiffsResponse.diffs[0], "type", "NEW_IDS"))
             errors.push(is(findDiffsResponse.diffs[0], "prio", 0))
+            errors.push(is(findDiffsResponse.diffs[0], "title", "Den bästa fejktiteln."))
             errors = errors.filter(x => x.trim())
 
             return errors.length === 0 ? "OK" : errors.join("\n")
