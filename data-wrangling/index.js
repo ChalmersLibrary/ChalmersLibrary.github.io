@@ -6,6 +6,45 @@ const SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE = {
     "pmid": "PUBMED_ID"
 }
 
+const PRIORITIZED_PUB_TYPE_IDS = [
+    "67383db1-533a-4ec6-8c58-6922e711b5c2",
+    "fb7b28c6-67eb-4a18-969b-93617f17c6fd",
+    "cc10a3d7-a830-4f25-8473-4aecb9d0fb46",
+    "8bb5ac5b-af8c-4a1e-8fdb-0454d3258990"
+]
+
+const RESEARCH_PUB_TYPE_ID_TO_NAME = {
+    "67383db1-533a-4ec6-8c58-6922e711b5c2": "Artikel i vetenskaplig tidskrift",
+    "dd361817-de85-477c-ad83-07def68040d5": "Preprint",
+    "7dc9214c-b2d3-49a7-83e9-a205d06b668e": "Artikel, övrig vetenskaplig",
+    "d0a50011-578e-4b55-b4b5-34f71d507c38": "Reviewartikel",
+    "fb7b28c6-67eb-4a18-969b-93617f17c6fd": "Artikel, recension (forskningsöversikt).",
+    "2fc3e903-da49-4a79-9f2b-16ff93d34cfe": "Artikel i övriga tidskrifter",
+    "1403066e-9d0c-41fa-ad4a-1d57ffeb04bf": "Artikel i dagstidning",
+    "12e4c4f6-4966-473b-ad56-21df59b74e6e": "Inledande text i tidskrift",
+    "eef3059a-c32c-4fdc-946a-006e7699e975": "Bok",
+    "cc10a3d7-a830-4f25-8473-4aecb9d0fb46": "Bok, refereegranskad",
+    "af9af7de-b11c-40a2-838e-9c63493ac3a8": "Bok, populärvetenskaplig",
+    "173d963e-5a8d-43b3-9e05-7f860659451c": "Samlingsverk (redaktörskap)",
+    "56579964-308c-4138-995f-84d5c446b060": "Bok med redaktör, refereegranskad",
+    "39f2dbf4-3f0b-40fd-b3e0-78664781f28c": "Tidskrift med redaktör, vetenskaplig",
+    "48ded372-c881-4fc9-bc99-ddd024d595a7": "Rapport, populärvetenskaplig",
+    "4951f99d-df1a-4dec-aca7-11b970192457": "Rapport",
+    "609e6c8d-8565-4cbd-a51e-5a1d2544de70": "Kapitel",
+    "4dd8982c-3233-4412-b9c5-34a9e53900ea": "Kapitel i bok",
+    "7d7fc5ea-ca2e-4b78-b57a-a20a7ec49bce": "Kapitel, populärvetenskapligt",
+    "e4d12779-9fd5-4fa5-9407-df6d4c466ac0": "Konstnärligt arbete, refereegranskat",
+    "b9477106-cec2-4ef1-9ccd-676e407f07bf": "Konstnärligt arbete",
+    "8bb5ac5b-af8c-4a1e-8fdb-0454d3258990": "Paper i proceeding",
+    "fcbd2df8-7e42-4723-8813-3cb9efeb9505": "Proceeding (redaktörskap)",
+    "4081fbf3-0bc3-43dc-ae62-4eb69fe94bde": "Konferensbidrag (offentliggjort, men ej förlagsutgivet)",
+    "0d689b87-34ff-44da-9af6-56028cd2ba56": "Poster (konferens)",
+    "b8917acf-9b24-4103-befd-a9ca42a53e9f": "Licentiatavhandling",
+    "645ba094-942d-400a-84cc-ec47ee01ec48": "Doktorsavhandling",
+    "9e42eb8c-5537-4ee8-a098-5e77d1b92453": "Patent",
+    "35dbc28f-316c-43a0-bd30-10bc494f0adb": "Övrigt"
+}
+
 const SWEPUB_OUTPUT_AND_CONTENT_TYPE_TO_RESEARCH_PUB_TYPE = {
     "publication/journal-article:ref"           : "67383db1-533a-4ec6-8c58-6922e711b5c2",   // Artikel i vetenskaplig tidskrift
     // The following could be Preprint (dd361817-de85-477c-ad83-07def68040d5)?
@@ -193,12 +232,15 @@ export async function findDifferences(normalizedData, esPost) {
             // We found no connected publications
             res.diffs.push({
                 title: normalizedData.Title,
+                year: normalizedData.Year,
+                pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id],
                 source: normalizedData.__meta,
                 connected: [],
                 description: "Found no publications connected to the source data with identifiers: " +
                     normalizedData.Identifiers.map(idObj => idObj.Type.Value + ":" + idObj.Value).join(", ") + ".",
                 type: "NEW_IDS",
-                prio: 0
+                prio: normalizedData.Year + // Higher number means more prioritized
+                    (PRIORITIZED_PUB_TYPE_IDS.includes(normalizedData.PublicationType?.Id) ? 10000 : 0)
             })
         } else if (connectedPublications.hits.total === 1) {
             // We found one connected publication

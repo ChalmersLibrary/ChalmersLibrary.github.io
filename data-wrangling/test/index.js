@@ -222,8 +222,10 @@ const TESTS = [
             errors.push(is(findDiffsResponse.diffs, "length", 1))
             errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
             errors.push(is(findDiffsResponse.diffs[0], "type", "NEW_IDS"))
-            errors.push(is(findDiffsResponse.diffs[0], "prio", 0))
+            errors.push(is(findDiffsResponse.diffs[0], "prio", 12008))
             errors.push(is(findDiffsResponse.diffs[0], "title", "Den bästa fejktiteln."))
+            errors.push(is(findDiffsResponse.diffs[0], "year", 2008))
+            errors.push(is(findDiffsResponse.diffs[0], "pubType", "Artikel i vetenskaplig tidskrift"))
             errors = errors.filter(x => x.trim())
 
             return errors.join("\n")
@@ -264,7 +266,7 @@ export async function runTests() {
         } else {
             okCount += 1
         }
-        res.push((resultText.trim() ? "FAILED" : "OK") + " - " + test.name)
+        res.push((resultText.trim() ? "FAILED" : "OK") + " - " + test.name + " " + resultText)
     }
     return `
 ================================================================================
