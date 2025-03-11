@@ -15,6 +15,20 @@ let is = (o, fieldOrFn, expectedValue) => {
     return res
 }
 
+let createBasicTestMethod = (filepath, checkFn) => {
+    return async function () {
+        let response = await fetch(filepath)
+        let textData = await response.text()
+        let normalizedData = this.normalizeSwepub(textData, "FEJKKÄLLAN")
+
+        let errors = []
+        checkFn(errors, normalizedData)
+        errors = errors.filter(x => x.trim())
+
+        return errors.join("\n")
+    }
+}
+
 const TESTS = [
     {
         name: "Normalization of swepub data, normal post",
@@ -31,6 +45,7 @@ const TESTS = [
             errors.push(is(normalizedData.__meta, "method", "normalizeSwepub"))
             errors.push(is(normalizedData, "Title", "Den bästa fejktiteln."))
             errors.push(is(normalizedData, "Year", 2008))
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "67383db1-533a-4ec6-8c58-6922e711b5c2"))
             errors.push(is(normalizedData, pub => pub.Identifiers.some(idObj => idObj.Type.Value === "DOI" && idObj.Value === "10.1234/fejk.1234")))
             errors.push(is(normalizedData, pub => pub.Identifiers.some(idObj => idObj.Type.Value === "PUBMED_ID" && idObj.Value === "12345678")))
             errors.push(is(normalizedData, pub => pub.Identifiers.some(idObj => idObj.Type.Value === "SCOPUS_ID" && idObj.Value === "12345678909")))
@@ -53,7 +68,7 @@ const TESTS = [
 
             errors = errors.filter(x => x.trim())
 
-            return errors.length === 0 ? "OK" : errors.join("\n")
+            return errors.join("\n")
         }
     },
     {
@@ -69,8 +84,123 @@ const TESTS = [
             errors.push(is(normalizedData.__meta, "datestamp", "2022-11-30T11:45:48Z"))
             errors = errors.filter(x => x.trim())
 
-            return errors.length === 0 ? "OK" : errors.join("\n")
+            return errors.join("\n")
         }
+    },{
+        name: "Normalization of swepub data, publication type Artikel, övrig vetenskaplig",
+        fn: createBasicTestMethod("data/1-pt1.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "7dc9214c-b2d3-49a7-83e9-a205d06b668e"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Artikel, recension (forskningsöversikt)",
+        fn: createBasicTestMethod("data/1-pt2.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "fb7b28c6-67eb-4a18-969b-93617f17c6fd"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Artikel i övriga tidskrifter",
+        fn: createBasicTestMethod("data/1-pt3.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "2fc3e903-da49-4a79-9f2b-16ff93d34cfe"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Artikel i dagstidning",
+        fn: createBasicTestMethod("data/1-pt4.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "1403066e-9d0c-41fa-ad4a-1d57ffeb04bf"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Inledande text i tidskrift",
+        fn: createBasicTestMethod("data/1-pt5.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "12e4c4f6-4966-473b-ad56-21df59b74e6e"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Bok",
+        fn: createBasicTestMethod("data/1-pt6.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "eef3059a-c32c-4fdc-946a-006e7699e975"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Bok, refereegranskad",
+        fn: createBasicTestMethod("data/1-pt7.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "cc10a3d7-a830-4f25-8473-4aecb9d0fb46"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Bok, populärvetenskaplig",
+        fn: createBasicTestMethod("data/1-pt8.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "af9af7de-b11c-40a2-838e-9c63493ac3a8"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Samlingsverk (redaktörskap)",
+        fn: createBasicTestMethod("data/1-pt9.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "173d963e-5a8d-43b3-9e05-7f860659451c"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Bok med redaktör, refereegranskad",
+        fn: createBasicTestMethod("data/1-pt10.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "56579964-308c-4138-995f-84d5c446b060"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Tidskrift med redaktör, vetenskaplig",
+        fn: createBasicTestMethod("data/1-pt11.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "39f2dbf4-3f0b-40fd-b3e0-78664781f28c"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Rapport",
+        fn: createBasicTestMethod("data/1-pt12.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "4951f99d-df1a-4dec-aca7-11b970192457"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Kapitel i bok",
+        fn: createBasicTestMethod("data/1-pt13.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "4dd8982c-3233-4412-b9c5-34a9e53900ea"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Kapitel, populärvetenskapligt",
+        fn: createBasicTestMethod("data/1-pt14.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "7d7fc5ea-ca2e-4b78-b57a-a20a7ec49bce"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Konstnärligt arbete",
+        fn: createBasicTestMethod("data/1-pt15.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "b9477106-cec2-4ef1-9ccd-676e407f07bf"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Paper i proceeding",
+        fn: createBasicTestMethod("data/1-pt16.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "8bb5ac5b-af8c-4a1e-8fdb-0454d3258990"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Proceeding (redaktörskap)",
+        fn: createBasicTestMethod("data/1-pt17.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "fcbd2df8-7e42-4723-8813-3cb9efeb9505"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Konferensbidrag (offentliggjort, men ej förlagsutgivet)",
+        fn: createBasicTestMethod("data/1-pt18.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "4081fbf3-0bc3-43dc-ae62-4eb69fe94bde"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Poster (konferens)",
+        fn: createBasicTestMethod("data/1-pt19.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "0d689b87-34ff-44da-9af6-56028cd2ba56"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Licentiatavhandling",
+        fn: createBasicTestMethod("data/1-pt20.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "b8917acf-9b24-4103-befd-a9ca42a53e9f"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Doktorsavhandling",
+        fn: createBasicTestMethod("data/1-pt21.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "645ba094-942d-400a-84cc-ec47ee01ec48"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Patent",
+        fn: createBasicTestMethod("data/1-pt22.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "9e42eb8c-5537-4ee8-a098-5e77d1b92453"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Övrigt",
+        fn: createBasicTestMethod("data/1-pt23.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "35dbc28f-316c-43a0-bd30-10bc494f0adb"))
+        })
     },{
         name: "Find differences, all identifiers in query, no hit",
         fn: async function () {
@@ -96,7 +226,7 @@ const TESTS = [
             errors.push(is(findDiffsResponse.diffs[0], "title", "Den bästa fejktiteln."))
             errors = errors.filter(x => x.trim())
 
-            return errors.length === 0 ? "OK" : errors.join("\n")
+            return errors.join("\n")
         }
     },{
         name: "Find differences, status deleted, no crash",
@@ -117,7 +247,7 @@ const TESTS = [
             }
             errors.push(is(findDiffsResponse.diffs, val => Array.isArray(val) && val.length === 0))
             errors = errors.filter(x => x.trim())
-            return errors.length === 0 ? "OK" : errors.join("\n")
+            return errors.join("\n")
         }
     }
 ]
@@ -126,13 +256,20 @@ export async function runTests() {
     let importedModule = await import("../index.js?v=" + cacheBuster++)
 
     let res = []
+    let failCount = 0, okCount = 0
     for (const test of TESTS) {
-        res.push(test.name + " - " + await test.fn.call(importedModule))
+        let resultText = await test.fn.call(importedModule)
+        if (resultText.trim()) {
+            failCount += 1
+        } else {
+            okCount += 1
+        }
+        res.push((resultText.trim() ? "FAILED" : "OK") + " - " + test.name)
     }
     return `
-========================================
- RESULT FROM TESTING AT ${new Date().toLocaleTimeString()}
-========================================
+================================================================================
+ RESULT FROM TESTING AT ${new Date().toLocaleTimeString()},                         OK: ${okCount} FAILED: ${failCount}
+================================================================================
 ${res.join("\n----------------------------------------\n")}
     `
 }

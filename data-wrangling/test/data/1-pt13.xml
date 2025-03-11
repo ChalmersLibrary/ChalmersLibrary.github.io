@@ -1,0 +1,94 @@
+<record>
+    <header>
+        <identifier>oai:fejku.lib.chalmers.se/12345</identifier>
+        <datestamp>2024-01-21T21:56:02Z</datestamp>
+        <setSpec>FEJKU_SWEPUB</setSpec>
+    </header>
+    <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd" version="3.7">
+            <recordInfo>
+                <recordContentSource>fejku</recordContentSource>
+            </recordInfo>
+            <identifier type="uri">https://fejku.lib.chalmers.se/publication/12345</identifier>
+            <identifier type="pmid">12345678</identifier>
+            <identifier type="doi">10.1234/fejk.1234</identifier>
+            <identifier type="isi">123456789098765</identifier>
+			<identifier type="scopus">12345678909</identifier>
+            <titleInfo>
+                <title>Den bästa fejktiteln.</title>
+            </titleInfo>
+            <abstract>Fejkande fejkdata för fejkning av testfejkande. Kanske lite längre fejkande testdata behövs för att fullfölja fejkandets fejkiga fejkighet.</abstract>
+            <classification authority="ssif">30205</classification>
+            <subject lang="eng" authority="uka.se" xlink:href="30205">
+                <topic>Endocrinology and Diabetes</topic>
+            </subject>
+            <subject lang="swe" authority="uka.se" xlink:href="30205">
+                <topic>Endokrinologi och diabetes</topic>
+            </subject>
+            <language>
+                <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+            </language>
+            <genre authority="kb.se" type="outputType">publication/book-chapter</genre>
+            <genre authority="svep" type="contentType">vet</genre>
+            <name type="personal">
+                <namePart type="given">Fejk</namePart>
+                <namePart type="family">Fejksson</namePart>
+                <role>
+                    <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation lang="swe" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fejkuniversitet</affiliation>
+                <affiliation lang="eng" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fake University</affiliation>
+                <affiliation lang="swe" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0001">Institutionen f&#246;r tester som är fejk</affiliation>
+                <affiliation lang="eng" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0001">Department of testing that is fake</affiliation>
+            </name>
+            <name type="personal" authority="fejku">
+                <namePart type="given">Fjek</namePart>
+                <namePart type="family">Fjeksson</namePart>
+                <namePart type="date">1972</namePart>
+                <role>
+                    <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <nameIdentifier type="fejku">fejky</nameIdentifier>
+                <affiliation lang="swe" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fejkuniversitet</affiliation>
+                <affiliation lang="eng" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fake University</affiliation>
+                <affiliation lang="swe" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0002">Institutionen f&#246;r tester som är ganska fejk</affiliation>
+                <affiliation lang="eng" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0002">Department of testing that is pretty fake</affiliation>
+            </name>
+            <name type="personal">
+                <namePart type="given">Anon</namePart>
+                <namePart type="family">Fejko</namePart>
+                <role>
+                    <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+            </name>
+            <name type="personal">
+                <namePart type="given">Nymus</namePart>
+                <namePart type="family">Fjeko</namePart>
+                <role>
+                    <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+            </name>
+            <note type="publicationStatus">Published</note>
+            <note type="creatorCount">4</note>
+            <originInfo>
+                <dateIssued>2008</dateIssued>
+            </originInfo>
+            <relatedItem type="host">
+                <titleInfo>
+                    <title>Journal for International Fake Testing</title>
+                </titleInfo>
+                <identifier type="issn">0001-1234</identifier>
+                <part>
+                    <detail type="issue">
+                        <number>3</number>
+                    </detail>
+                    <extent>
+                        <start>26</start>
+                        <end>30</end>
+                    </extent>
+                </part>
+            </relatedItem>
+            <typeOfResource>text</typeOfResource>
+        </mods>
+    </metadata>
+</record>
