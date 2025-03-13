@@ -212,6 +212,17 @@ export async function findDifferences(normalizedData, esPost) {
             }
         })
 
+        if (normalizedData.Title) {
+            should.push({
+                match: {
+                    Title: {
+                        query: normalizedData.Title,
+                        operator: "and"
+                    }
+                }
+            })
+        }
+
         if (should.length > 0) {
             connectedPublications = await esPost("/research-publications/_search", {
                 size: 1000,

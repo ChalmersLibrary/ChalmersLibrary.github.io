@@ -212,7 +212,7 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.PublicationType.Id === "e4d12779-9fd5-4fa5-9407-df6d4c466ac0"))
         })
     },{
-        name: "Find differences, all identifiers in query, no hit",
+        name: "Find differences, all in query, no hit",
         fn: async function () {
             let response = await fetch("data/1.xml")
             let textData = await response.text()
@@ -225,10 +225,12 @@ const TESTS = [
             })
             
             let errors = []
+            console.log(shouldQueryArr)
             errors.push(is(shouldQueryArr, arr => arr[0]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "PUBMED_ID" && arr[0]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678"))
             errors.push(is(shouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
             errors.push(is(shouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "WOS_ID" && arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "123456789098765"))
             errors.push(is(shouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
+            errors.push(is(shouldQueryArr, arr => arr[arr.length - 1]?.match?.Title?.query === "Den bästa fejktiteln."))
             errors.push(is(findDiffsResponse.diffs, "length", 1))
             errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
             errors.push(is(findDiffsResponse.diffs[0], "type", "NEW_IDS"))
