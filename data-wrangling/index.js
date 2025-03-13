@@ -60,12 +60,12 @@ const SWEPUB_OUTPUT_AND_CONTENT_TYPE_TO_RESEARCH_PUB_TYPE = {
     "publication/edited-book:vet"               : "173d963e-5a8d-43b3-9e05-7f860659451c",   // Samlingsverk (redaktörskap)
     "publication/edited-book:ref"               : "56579964-308c-4138-995f-84d5c446b060",   // Bok med redaktör, refereegranskad
     "publication/journal-issue:ref"             : "39f2dbf4-3f0b-40fd-b3e0-78664781f28c",   // Tidskrift med redaktör, vetenskaplig
-    // The following could be Rapport, populärvetenskaplig (48ded372-c881-4fc9-bc99-ddd024d595a7)?
+    "publication/report:pop"                    : "48ded372-c881-4fc9-bc99-ddd024d595a7",   // Rapport, populärvetenskaplig
     "publication/report:vet"                    : "4951f99d-df1a-4dec-aca7-11b970192457",   // Rapport
     // The following could be Kapitel (609e6c8d-8565-4cbd-a51e-5a1d2544de70)?
     "publication/book-chapter:vet"              : "4dd8982c-3233-4412-b9c5-34a9e53900ea",   // Kapitel i bok
     "publication/book-chapter:pop"              : "7d7fc5ea-ca2e-4b78-b57a-a20a7ec49bce",   // Kapitel, populärvetenskapligt
-    // The following could be Konstnärligt arbete, refereegranskat (e4d12779-9fd5-4fa5-9407-df6d4c466ac0)?
+    "artistic-work/original-creative-work:ref"  : "e4d12779-9fd5-4fa5-9407-df6d4c466ac0",   // Konstnärligt arbete, refereegranskat
     "artistic-work/original-creative-work:vet"  : "b9477106-cec2-4ef1-9ccd-676e407f07bf",   // Konstnärligt arbete
     "conference/paper:ref"                      : "8bb5ac5b-af8c-4a1e-8fdb-0454d3258990",   // Paper i proceeding
     "conference/proceeding:vet"                 : "fcbd2df8-7e42-4723-8813-3cb9efeb9505",   // Proceeding (redaktörskap)
@@ -121,13 +121,14 @@ export function normalizeSwepub(data, name) {
         res.Year = parseInt(dateIssuedEl.innerText) || undefined
         res.Identifiers = []
         for (const idEl of modsEl.children.filter(x => x.name === "identifier")) {
-            let typeMatch = idEl.text.match(/type="(.*?)"/s)
+            let typeMatch = idEl.text.match(/type="(.*?)"/s) 
             if (typeMatch && SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]) {
+                let idValue = idEl.innerText
                 res.Identifiers.push({
                     Type: {
                         Value: SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]
                     },
-                    Value: idEl.innerText
+                    Value: idValue
                 })
             }
         }

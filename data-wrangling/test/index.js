@@ -202,6 +202,16 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.PublicationType.Id === "35dbc28f-316c-43a0-bd30-10bc494f0adb"))
         })
     },{
+        name: "Normalization of swepub data, publication type Rapport, populärvetenskaplig",
+        fn: createBasicTestMethod("data/1-pt24.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "48ded372-c881-4fc9-bc99-ddd024d595a7"))
+        })
+    },{
+        name: "Normalization of swepub data, publication type Konstnärligt arbete, refereegranskat",
+        fn: createBasicTestMethod("data/1-pt25.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.PublicationType.Id === "e4d12779-9fd5-4fa5-9407-df6d4c466ac0"))
+        })
+    },{
         name: "Find differences, all identifiers in query, no hit",
         fn: async function () {
             let response = await fetch("data/1.xml")

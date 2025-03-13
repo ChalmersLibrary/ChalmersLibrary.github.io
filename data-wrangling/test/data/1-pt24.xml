@@ -14,7 +14,6 @@
             <identifier type="doi">10.1234/fejk.1234</identifier>
             <identifier type="isi">123456789098765</identifier>
 			<identifier type="scopus">12345678909</identifier>
-            <identifier type="isbn">1234567890987</identifier>
             <titleInfo>
                 <title>Den bästa fejktiteln.</title>
             </titleInfo>
@@ -29,8 +28,8 @@
             <language>
                 <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
             </language>
-            <genre authority="kb.se" type="outputType">publication/journal-article</genre>
-            <genre authority="svep" type="contentType">ref</genre>
+            <genre authority="kb.se" type="outputType">publication/report</genre>
+            <genre authority="svep" type="contentType">pop</genre>
             <name type="personal">
                 <namePart type="given">Fejk</namePart>
                 <namePart type="family">Fejksson</namePart>
