@@ -190,7 +190,7 @@ export async function findDifferences(normalizedData, esPost) {
     if (normalizedData.__meta.status !== "deleted") {
         // Use identifiers to try to find connected existing publications
         let connectedPublications
-        let should = normalizedData.Identifiers.map(idObj => {
+        let nestedShould = normalizedData.Identifiers.map(idObj => {
             return {
                 bool: {
                     must: [
@@ -212,6 +212,7 @@ export async function findDifferences(normalizedData, esPost) {
             }
         })
 
+        let should = []
         if (normalizedData.Title) {
             should.push({
                 match: {
@@ -223,18 +224,25 @@ export async function findDifferences(normalizedData, esPost) {
             })
         }
 
-        if (should.length > 0) {
+        if (nestedShould.length > 0 || should.length > 0) {
             connectedPublications = await esPost("/research-publications/_search", {
                 size: 1000,
                 _source: ["Id"],
                 query: {
-                    nested: {
-                        path: "Identifiers",
-                        query: {
-                            bool: {
-                                should
-                            }
-                        }
+                    bool: {
+                        should: [
+                            {
+                                nested: {
+                                    path: "Identifiers",
+                                    query: {
+                                        bool: {
+                                            should: nestedShould
+                                        }
+                                    }
+                                }
+                            },
+                            ...should
+                        ]
                     }
                 }
             })
