@@ -3,7 +3,8 @@ const SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE = {
     "isi": "WOS_ID",
     "scopus": "SCOPUS_ID",
     "isbn": "ISBN",
-    "pmid": "PUBMED_ID"
+    "pmid": "PUBMED_ID",
+    "uri": "URI"
 }
 
 const PRIORITIZED_PUB_TYPE_IDS = [
