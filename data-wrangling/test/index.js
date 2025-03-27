@@ -228,11 +228,13 @@ const TESTS = [
             })
             
             let errors = []
-            errors.push(is(nestedShouldQueryArr, arr => arr[0]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "PUBMED_ID" && arr[0]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678"))
-            errors.push(is(nestedShouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
-            errors.push(is(nestedShouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "WOS_ID" && arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "123456789098765"))
-            errors.push(is(nestedShouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
-            errors.push(is(nestedShouldQueryArr, arr => arr[4]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "ISBN" && arr[4]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "1234567890987"))
+            console.log(nestedShouldQueryArr)
+            errors.push(is(nestedShouldQueryArr, arr => arr[0]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "URI" &&       arr[0]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "https://fejku.lib.chalmers.se/publication/12345"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "PUBMED_ID" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" &&       arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "WOS_ID" &&    arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "123456789098765"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[4]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[4]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[5]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "ISBN" &&      arr[5]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "1234567890987"))
             errors.push(is(shouldQueryArr, arr => arr[1]?.match?.Title?.query === "Den bästa fejktiteln."))
             errors.push(is(findDiffsResponse.diffs, "length", 1))
             errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
