@@ -114,7 +114,7 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
     if (metadataEl) {
         let modsEl = metadataEl.children.find(x => x.name === "mods")
 
-        res.Title = (x => x ? x.replace(/&#([0-9]{3});/g, (_,x) => String.fromCharCode(x)) : x)(modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText)
+        res.Title = (t => t ? t.replace(/&#([0-9]{3});/g, (_,x) => String.fromCharCode(x)) : t)(modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText)
 
         let originInfoEl = modsEl.children.find(x => x.name == "originInfo")
         let dateIssuedEl = originInfoEl.children.find(x => x.name == "dateIssued")
@@ -143,8 +143,8 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         for (const personEl of modsEl.children.filter(x => x.name === "name")) {
             let personOrgRole = {
                 PersonData: {
-                    FirstName: (x => x ? x.replace(/&#([0-9]{3});/g, (_,x) => String.fromCharCode(x)) : x)((personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1]),
-                    LastName: (x => x ? x.replace(/&#([0-9]{3});/g, (_,x) => String.fromCharCode(x)) : x)((personEl.innerText.match(/<namePart type="family">(.*?)<\/namePart>/s) || [])[1]),
+                    FirstName: (fn => fn ? fn.replace(/&#([0-9]{3});/g, (_,x) => String.fromCharCode(x)) : fn)((personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1]),
+                    LastName: (ln => ln ? ln.replace(/&#([0-9]{3});/g, (_,x) => String.fromCharCode(x)) : ln)((personEl.innerText.match(/<namePart type="family">(.*?)<\/namePart>/s) || [])[1]),
                     BirthYear: parseInt((personEl.innerText.match(/<namePart type="date">(.*?)<\/namePart>/s) || [])[1]) || undefined,
                     Organizations: []
                 }
