@@ -15,11 +15,11 @@ let is = (o, fieldOrFn, expectedValue) => {
     return res
 }
 
-let createBasicTestMethod = (filepath, checkFn) => {
+let createBasicTestMethod = (filepath, checkFn, ...moreArgs) => {
     return async function () {
         let response = await fetch(filepath)
         let textData = await response.text()
-        let normalizedData = this.normalizeSwepub(textData, "FEJKKÄLLAN")
+        let normalizedData = this.normalizeSwepub(textData, ...moreArgs)
 
         let errors = []
         checkFn(errors, normalizedData)
@@ -212,6 +212,13 @@ const TESTS = [
         fn: createBasicTestMethod("data/1-pt25.xml", (errors, normalizedData) => {
             errors.push(is(normalizedData, pub => pub.PublicationType.Id === "e4d12779-9fd5-4fa5-9407-df6d4c466ac0"))
         })
+    },{
+        name: "Normalization of swepub data, HTML entities decoded",
+        fn: createBasicTestMethod("data/1-html-entities.xml", (errors, normalizedData) => {
+            errors.push(is(normalizedData, pub => pub.Title === "Den bästa fejktiteln. åäöÅÄÖ"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.FirstName === "Fejk åäöÅÄÖ"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.LastName === "Fejksson åäöÅÄÖ"))
+        }, "FEJKKÄLLAN", true)
     },{
         name: "Find differences, all in query, no hit",
         fn: async function () {
