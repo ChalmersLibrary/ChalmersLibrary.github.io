@@ -114,7 +114,7 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
     if (metadataEl) {
         let modsEl = metadataEl.children.find(x => x.name === "mods")
 
-        res.Title = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,4});/g, (_,x) => String.fromCharCode(x)) : t)(modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText)
+        res.Title = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : t)(modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText)
 
         let originInfoEl = modsEl.children.find(x => x.name == "originInfo")
         let dateIssuedEl = originInfoEl.children.find(x => x.name == "dateIssued")
@@ -143,8 +143,8 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         for (const personEl of modsEl.children.filter(x => x.name === "name")) {
             let personOrgRole = {
                 PersonData: {
-                    FirstName: (fn => fn && decodePossiblyUnsafeEntities ? fn.replace(/&#([0-9]{1,4});/g, (_,x) => String.fromCharCode(x)) : fn)((personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1]),
-                    LastName: (ln => ln && decodePossiblyUnsafeEntities ? ln.replace(/&#([0-9]{1,4});/g, (_,x) => String.fromCharCode(x)) : ln)((personEl.innerText.match(/<namePart type="family">(.*?)<\/namePart>/s) || [])[1]),
+                    FirstName: (fn => fn && decodePossiblyUnsafeEntities ? fn.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : fn)((personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1]),
+                    LastName: (ln => ln && decodePossiblyUnsafeEntities ? ln.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : ln)((personEl.innerText.match(/<namePart type="family">(.*?)<\/namePart>/s) || [])[1]),
                     BirthYear: parseInt((personEl.innerText.match(/<namePart type="date">(.*?)<\/namePart>/s) || [])[1]) || undefined,
                     Organizations: []
                 }
