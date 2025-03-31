@@ -16,7 +16,7 @@
 			<identifier type="scopus">12345678909</identifier>
             <identifier type="isbn">1234567890987</identifier>
             <titleInfo>
-                <title>Den bästa fejktiteln. &#229;&#228;&#246;&#197;&#196;&#214;</title>
+                <title>Den bästa fejktiteln. &#229;&#228;&#246;&#197;&#196;&#214; &#8217; &#13;</title>
             </titleInfo>
             <abstract>Fejkande fejkdata för fejkning av testfejkande. Kanske lite längre fejkande testdata behövs för att fullfölja fejkandets fejkiga fejkighet.</abstract>
             <classification authority="ssif">30205</classification>
@@ -32,8 +32,8 @@
             <genre authority="kb.se" type="outputType">publication/journal-article</genre>
             <genre authority="svep" type="contentType">ref</genre>
             <name type="personal">
-                <namePart type="given">Fejk &#229;&#228;&#246;&#197;&#196;&#214;</namePart>
-                <namePart type="family">Fejksson &#229;&#228;&#246;&#197;&#196;&#214;</namePart>
+                <namePart type="given">Fejk &#229;&#228;&#246;&#197;&#196;&#214; &#8217; &#13;</namePart>
+                <namePart type="family">Fejksson &#229;&#228;&#246;&#197;&#196;&#214; &#8217; &#13;</namePart>
                 <role>
                     <roleTerm type="code" authority="marcrelator">aut</roleTerm>
                 </role>

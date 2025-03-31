@@ -215,9 +215,9 @@ const TESTS = [
     },{
         name: "Normalization of swepub data, HTML entities decoded",
         fn: createBasicTestMethod("data/1-html-entities.xml", (errors, normalizedData) => {
-            errors.push(is(normalizedData, pub => pub.Title === "Den bästa fejktiteln. åäöÅÄÖ"))
-            errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.FirstName === "Fejk åäöÅÄÖ"))
-            errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.LastName === "Fejksson åäöÅÄÖ"))
+            errors.push(is(normalizedData, pub => pub.Title === "Den bästa fejktiteln. åäöÅÄÖ ’ \r"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.FirstName === "Fejk åäöÅÄÖ ’ \r"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.LastName === "Fejksson åäöÅÄÖ ’ \r"))
         }, "FEJKKÄLLAN", true)
     },{
         name: "Find differences, all in query, no hit",
