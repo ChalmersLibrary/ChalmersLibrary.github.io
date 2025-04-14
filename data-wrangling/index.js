@@ -140,7 +140,7 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         res.PublicationType = (Id => Id ? {Id} : undefined)(SWEPUB_OUTPUT_AND_CONTENT_TYPE_TO_RESEARCH_PUB_TYPE[outputType + ":" + contentType])
 
         res.Persons = []
-        for (const personEl of modsEl.children.filter(x => x.name === "name")) {
+        for (const personEl of modsEl.children.filter(x => x.name === "name" && x.attrText.match(/type="personal"/))) {
             let personOrgRole = {
                 PersonData: {
                     FirstName: (fn => fn && decodePossiblyUnsafeEntities ? fn.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : fn)((personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1]),

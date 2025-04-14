@@ -235,7 +235,6 @@ const TESTS = [
             })
             
             let errors = []
-            console.log(nestedShouldQueryArr)
             errors.push(is(nestedShouldQueryArr, arr => arr[0]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "URI" &&       arr[0]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "https://fejku.lib.chalmers.se/publication/12345"))
             errors.push(is(nestedShouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "PUBMED_ID" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678"))
             errors.push(is(nestedShouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" &&       arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
