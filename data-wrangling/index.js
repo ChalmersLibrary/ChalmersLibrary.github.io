@@ -1,3 +1,42 @@
+const LANGUAGES_ISO_TO_INTERNAL = {
+    und: "88e65284-77f2-4cf1-a211-a0294967c9ee",
+    bos: "3556210b-7f0a-4a55-ac43-254b83686da8",
+    bul: "e4cb4450-c07d-42bd-bc32-945e8b7e1bf1",
+    dan: "a9ea0088-75da-40d3-8b0d-63e7f486ec86",
+    eng: "4e28320a-1397-47a6-bbfd-e9294ef8b374",
+    fin: "256c8d98-4ec6-4a79-8d91-b89999251ae3",
+    fre: "3259e5b5-5dbe-433b-84cb-0e659eff4d12",
+    gre: "8bac640f-8427-4fb6-9704-68ad0452b279",
+    ice: "bb0fc862-7bae-4c01-b716-2d5b14c4cdec",
+    ita: "6191b510-08f6-41cd-b996-79fe1a83f41b",
+    jpn: "81179155-764c-4f2c-ad78-43269c70bcda",
+    chi: "5e029b55-e04d-45c0-b642-8a7df18508ab",
+    hrv: "3351e364-a2b5-4e35-ac51-944cb89a4e7f",
+    lav: "c2fadac6-d5a7-4bdc-99ae-ec2a0f06a1d3",
+    // chi: "bc04bdbf-8695-44bb-84fb-38e46a32d318", // Mandarin
+    dut: "92834bcf-edfa-4b7f-85ac-ca8f077b916b",
+    nor: "3e74d3bc-5b8d-4f39-9c89-a33cda0c92cd",
+    pol: "50e3da53-b706-474c-a6a9-9bc5d4f4ff0b",
+    por: "aa9a4edb-ab6f-4c86-be61-5946d6ee40cb",
+    rus: "5a5cb7f5-1056-4084-a1a3-1787fa718399",
+    srp: "3930222c-4004-4b55-bcaf-c44e9e9c7e43",
+    slo: "c23e3628-6fda-4e54-9b50-68f4dc872fcf",
+    slv: "719ed594-2560-48b0-8eb3-4aed82df2c8f",
+    spa: "4f8c047f-b9b4-4765-b37a-0e7062882d7f",
+    swe: "2950f9d6-14af-49a1-9133-adacc07cbb6d",
+    cze: "d25c0ffa-434c-4da9-a904-021f416f744a",
+    ger: "7ae6feb9-5bcb-4317-9347-808983098c0d",
+    hun: "9833bf27-5219-41f2-bb67-6c599f37a307",
+    kor: "1501ee29-8dc9-4b83-adbf-707d4540c0ab",
+    per: "8861e3ee-2ec3-4d4c-bdfc-b6c9753eb080",
+    tur: "faed4fd5-7f2f-4f40-8db1-353e5b01cc51",
+    ukr: "9467fd98-edc8-4b95-a250-c86bd2468d1a",
+    lit: "2c66c504-7f81-4253-b897-23ab4e40fe0f",
+    bel: "069f56bd-5b24-44de-880a-fb8eaa80ee07",
+    ara: "c3853b25-9ac2-426b-9cdb-76f6c466d666",
+    heb: "4def7f19-4247-4f17-befe-bde937b4e966"
+}
+
 const SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE = {
     "doi": "DOI",
     "isi": "WOS_ID",
@@ -120,6 +159,8 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         let dateIssuedEl = originInfoEl.children.find(x => x.name == "dateIssued")
     
         res.Year = parseInt(dateIssuedEl.innerText) || undefined
+        res.Language = (t => t ? { Id:LANGUAGES_ISO_TO_INTERNAL[t], Iso:t } : { Id:LANGUAGES_ISO_TO_INTERNAL["und"], Iso: "und" })(modsEl.children.find(x => x.name === "language")?.children.find(x => x.name === "languageTerm" && x.attrText.match(/authority="iso639-2b"/))?.innerText)
+
         res.Identifiers = []
         for (const idEl of modsEl.children.filter(x => x.name === "identifier")) {
             let typeMatch = idEl.text.match(/type="(.*?)"/s) 
