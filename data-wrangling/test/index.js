@@ -67,7 +67,13 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[1].OrganizationData.Identifiers.some(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === "fejku.lib.chalmers.se/0002")))
             errors.push(is(normalizedData, pub => pub.Persons[2].PersonData.FirstName === "Anon" && pub.Persons[2].PersonData.LastName === "Fejko"))
             errors.push(is(normalizedData, pub => pub.Persons[3].PersonData.FirstName === "Nymus" && pub.Persons[3].PersonData.LastName === "Fjeko"))
-
+            errors.push(is(normalizedData, pub => pub.Source?.Volume === "261"))
+            errors.push(is(normalizedData, pub => pub.Source?.Issue === "3"))
+            errors.push(is(normalizedData, pub => pub.Source?.ArticleNo === "6374"))
+            errors.push(is(normalizedData, pub => pub.Source?.PageStart === "26"))
+            errors.push(is(normalizedData, pub => pub.Source?.PageEnd === "30"))
+            errors.push(is(normalizedData, pub => pub.Source?.Identifiers[0].Type.Value === "ISSN" && pub.Source?.Identifiers[0].Value === "0001-1234"))
+            errors.push(is(normalizedData, pub => pub.Source?.Identifiers[1].Type.Value === "ISBN" && pub.Source?.Identifiers[1].Value === "00-12345-67-8"))
             errors = errors.filter(x => x.trim())
 
             return errors.join("\n")

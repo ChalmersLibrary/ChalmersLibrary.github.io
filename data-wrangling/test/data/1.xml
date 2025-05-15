@@ -79,9 +79,16 @@
                     <title>Journal for International Fake Testing</title>
                 </titleInfo>
                 <identifier type="issn">0001-1234</identifier>
+                <identifier type="isbn">00-12345-67-8</identifier>
                 <part>
                     <detail type="issue">
                         <number>3</number>
+                    </detail>
+                    <detail type="volume">
+                        <number>261</number>
+                    </detail>
+                    <detail type="artNo">
+                        <number>6374</number>
                     </detail>
                     <extent>
                         <start>26</start>
@@ -89,6 +96,12 @@
                     </extent>
                 </part>
             </relatedItem>
+            <location>
+                <url note="free" usage="primary" displayLabel="FULLTEXT">https://fejku.lib.chalmers.se/publication/12345</url>
+            </location>
+            <physicalDescription>
+                <form authority="marcform">electronic</form>
+            </physicalDescription>
             <typeOfResource>text</typeOfResource>
         </mods>
     </metadata>

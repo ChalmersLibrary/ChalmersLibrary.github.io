@@ -42,6 +42,7 @@ const SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE = {
     "isi": "WOS_ID",
     "scopus": "SCOPUS_ID",
     "isbn": "ISBN",
+    "issn": "ISSN",
     "pmid": "PUBMED_ID",
     "uri": "URI"
 }
@@ -161,16 +162,37 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         res.Year = parseInt(dateIssuedEl.innerText) || undefined
         res.Language = (t => t ? { Id:LANGUAGES_ISO_TO_INTERNAL[t], Iso:t } : { Id:LANGUAGES_ISO_TO_INTERNAL["und"], Iso: "und" })(modsEl.children.find(x => x.name === "language")?.children.find(x => x.name === "languageTerm" && x.attrText.match(/authority="iso639-2b"/))?.innerText)
 
+        let relatedItemHostEl = modsEl.children.find(x => x.name === "relatedItem" && x.attrText.match(/type="host"/))
+        if (relatedItemHostEl) {
+            res.Source = {}
+            res.Source.Volume = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "detail" && x.attrText.match(/type="volume"/))?.children.find(x => x.name === "number")?.innerText
+            res.Source.Issue = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "detail" && x.attrText.match(/type="issue"/))?.children.find(x => x.name === "number")?.innerText
+            res.Source.ArticleNo = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "detail" && x.attrText.match(/type="artNo"/))?.children.find(x => x.name === "number")?.innerText
+            res.Source.PageStart = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "extent")?.children.find(x => x.name === "start")?.innerText
+            res.Source.PageEnd = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "extent")?.children.find(x => x.name === "end")?.innerText
+            res.Source.Identifiers = []
+            for (const idEl of relatedItemHostEl.children.filter(x => x.name === "identifier")) {
+                let typeMatch = idEl.text.match(/type="(.*?)"/s) 
+                if (typeMatch && SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]) {
+                    res.Source.Identifiers.push({
+                        Type: {
+                            Value: SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]
+                        },
+                        Value: idEl.innerText
+                    })
+                }
+            }
+        }
+        
         res.Identifiers = []
         for (const idEl of modsEl.children.filter(x => x.name === "identifier")) {
             let typeMatch = idEl.text.match(/type="(.*?)"/s) 
             if (typeMatch && SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]) {
-                let idValue = idEl.innerText
                 res.Identifiers.push({
                     Type: {
                         Value: SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]
                     },
-                    Value: idValue
+                    Value: idEl.innerText
                 })
             }
         }
