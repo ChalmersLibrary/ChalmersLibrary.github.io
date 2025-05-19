@@ -67,6 +67,7 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.Persons[1].Organizations[1].OrganizationData.Identifiers.some(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === "fejku.lib.chalmers.se/0002")))
             errors.push(is(normalizedData, pub => pub.Persons[2].PersonData.FirstName === "Anon" && pub.Persons[2].PersonData.LastName === "Fejko"))
             errors.push(is(normalizedData, pub => pub.Persons[3].PersonData.FirstName === "Nymus" && pub.Persons[3].PersonData.LastName === "Fjeko"))
+            errors.push(is(normalizedData, pub => pub.Source?.Title === "Journal for International Fake Testing"))
             errors.push(is(normalizedData, pub => pub.Source?.Volume === "261"))
             errors.push(is(normalizedData, pub => pub.Source?.Issue === "3"))
             errors.push(is(normalizedData, pub => pub.Source?.ArticleNo === "6374"))

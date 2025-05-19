@@ -165,6 +165,7 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         let relatedItemHostEl = modsEl.children.find(x => x.name === "relatedItem" && x.attrText.match(/type="host"/))
         if (relatedItemHostEl) {
             res.Source = {}
+            res.Source.Title = relatedItemHostEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText
             res.Source.Volume = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "detail" && x.attrText.match(/type="volume"/))?.children.find(x => x.name === "number")?.innerText
             res.Source.Issue = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "detail" && x.attrText.match(/type="issue"/))?.children.find(x => x.name === "number")?.innerText
             res.Source.ArticleNo = relatedItemHostEl.children.find(x => x.name === "part")?.children.find(x => x.name === "detail" && x.attrText.match(/type="artNo"/))?.children.find(x => x.name === "number")?.innerText
