@@ -75,6 +75,7 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.Source?.PageEnd === "30"))
             errors.push(is(normalizedData, pub => pub.Source?.Identifiers[0].Type.Value === "ISSN" && pub.Source?.Identifiers[0].Value === "0001-1234"))
             errors.push(is(normalizedData, pub => pub.Source?.Identifiers[1].Type.Value === "ISBN" && pub.Source?.Identifiers[1].Value === "00-12345-67-8"))
+            errors.push(is(normalizedData, pub => pub.DataObjects?.length === 1 && pub.DataObjects[0].DataObjectType.Id === "954d52b7-a9d9-4c5c-aa13-351391ed1cc2" && pub.DataObjects[0].Url === "https://fejku.lib.chalmers.se/publication/12345"))
             errors = errors.filter(x => x.trim())
 
             return errors.join("\n")

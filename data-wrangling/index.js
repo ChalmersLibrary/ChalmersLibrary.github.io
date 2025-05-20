@@ -156,11 +156,13 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
 
         res.Title = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : t)(modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText)
 
-        let originInfoEl = modsEl.children.find(x => x.name == "originInfo")
-        let dateIssuedEl = originInfoEl.children.find(x => x.name == "dateIssued")
+        let originInfoEl = modsEl.children.find(x => x.name === "originInfo")
+        let dateIssuedEl = originInfoEl.children.find(x => x.name === "dateIssued")
     
         res.Year = parseInt(dateIssuedEl.innerText) || undefined
         res.Language = (t => t ? { Id:LANGUAGES_ISO_TO_INTERNAL[t], Iso:t } : { Id:LANGUAGES_ISO_TO_INTERNAL["und"], Iso: "und" })(modsEl.children.find(x => x.name === "language")?.children.find(x => x.name === "languageTerm" && x.attrText.match(/authority="iso639-2b"/))?.innerText)
+
+        res.DataObjects = (ft => ft ? [ { Url:ft, DataObjectType:{ Id:"954d52b7-a9d9-4c5c-aa13-351391ed1cc2"} } ] : undefined)(modsEl.children.find(x => x.name === "location")?.children.find(x => x.name === "url" && x.attrText.match(/displayLabel="FULLTEXT"/))?.innerText)
 
         let relatedItemHostEl = modsEl.children.find(x => x.name === "relatedItem" && x.attrText.match(/type="host"/))
         if (relatedItemHostEl) {
