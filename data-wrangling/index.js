@@ -155,6 +155,7 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         let modsEl = metadataEl.children.find(x => x.name === "mods")
 
         res.Title = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : t)(modsEl.children.find(x => x.name === "titleInfo")?.children.find(x => x.name === "title")?.innerText)
+        res.Abstract = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : t)(modsEl.children.find(x => x.name === "abstract")?.innerText)
 
         let originInfoEl = modsEl.children.find(x => x.name === "originInfo")
         let dateIssuedEl = originInfoEl.children.find(x => x.name === "dateIssued")

@@ -44,6 +44,7 @@ const TESTS = [
             errors.push(is(normalizedData.__meta, "name", "FEJKKÄLLAN"))
             errors.push(is(normalizedData.__meta, "method", "normalizeSwepub"))
             errors.push(is(normalizedData, "Title", "Den bästa fejktiteln."))
+            errors.push(is(normalizedData, "Abstract", "Fejkande fejkdata för fejkning av testfejkande. Kanske lite längre fejkande testdata behövs för att fullfölja fejkandets fejkiga fejkighet."))
             errors.push(is(normalizedData, "Year", 2008))
             errors.push(is(normalizedData, pub => pub.Language != null && pub.Language.Iso === "eng" && pub.Language.Id === "4e28320a-1397-47a6-bbfd-e9294ef8b374"))
             errors.push(is(normalizedData, pub => pub.PublicationType.Id === "67383db1-533a-4ec6-8c58-6922e711b5c2"))
