@@ -318,18 +318,22 @@ export async function findDifferences(normalizedData, esPost) {
 
         if (!connectedPublications?.hits?.total) {
             // We found no connected publications
-            res.diffs.push({
-                title: normalizedData.Title,
-                year: normalizedData.Year,
-                pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id],
-                source: normalizedData.__meta,
-                connected: [],
-                description: "Found no publications connected to the source data with identifiers: " +
-                    normalizedData.Identifiers.map(idObj => idObj.Type.Value + ":" + idObj.Value).join(", ") + ".",
-                type: "NEW_IDS",
-                prio: normalizedData.Year + // Higher number means more prioritized
-                    (PRIORITIZED_PUB_TYPE_IDS.includes(normalizedData.PublicationType?.Id) ? 10000 : 0)
-            })
+            // Create one diff for each identifier.
+            let diffType = "NEW_ID"
+            for (const idObj of normalizedData.Identifiers) {
+                res.diffs.push({
+                    id: normalizedData.__meta.id + ":" + diffType + ":" + idObj.Type.Value + ":" + idObj.Value,
+                    title: normalizedData.Title,
+                    year: normalizedData.Year,
+                    pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id],
+                    source: normalizedData.__meta,
+                    connected: [],
+                    description: "Found no publications connected to the source data with identifier: " + idObj.Type.Value + ":" + idObj.Value + ".",
+                    type: diffType,
+                    prio: normalizedData.Year + // Higher number means more prioritized
+                        (PRIORITIZED_PUB_TYPE_IDS.includes(normalizedData.PublicationType?.Id) ? 10000 : 0)
+                })
+            }
         } else if (connectedPublications.hits.total === 1) {
             // We found one connected publication
             // description = "Found one publication connected to the source data."
