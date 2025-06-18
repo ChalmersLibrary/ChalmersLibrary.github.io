@@ -118,7 +118,7 @@ const SWEPUB_OUTPUT_AND_CONTENT_TYPE_TO_RESEARCH_PUB_TYPE = {
     "publication/other:vet"                     : "35dbc28f-316c-43a0-bd30-10bc494f0adb"    // Övrigt
 }
 
-let createHexHash = async text => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)))).map(b => b.toString(16).padStart(2, "0")).join("")
+let createHexHash = async text => (new Uint8Array(await crypto.subtle.digest("SHA-1", new TextEncoder().encode(text)))).toBase64().replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"")
 
 let matchXmlLevel = (innerText, attributesText, rootElementName, text) => {
     let res = {
