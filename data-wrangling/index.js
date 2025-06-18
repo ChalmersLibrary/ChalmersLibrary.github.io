@@ -118,7 +118,14 @@ const SWEPUB_OUTPUT_AND_CONTENT_TYPE_TO_RESEARCH_PUB_TYPE = {
     "publication/other:vet"                     : "35dbc28f-316c-43a0-bd30-10bc494f0adb"    // Övrigt
 }
 
-let createHexHash = async text => (new Uint8Array(await crypto.subtle.digest("SHA-1", new TextEncoder().encode(text)))).toBase64().replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"")
+let createHash = async text => {
+    let binaryString = ""
+    let bytes = new Uint8Array(await crypto.subtle.digest("SHA-1", new TextEncoder().encode(text)))
+    for (const byte of bytes) {
+        binaryString += String.fromCharCode(byte)
+    }
+    return btoa(binaryString).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"")
+}
 
 let matchXmlLevel = (innerText, attributesText, rootElementName, text) => {
     let res = {
@@ -324,7 +331,7 @@ export async function findDifferences(normalizedData, esPost) {
             let diffType = "NEW_ID"
             for (const idObj of normalizedData.Identifiers) {
                 res.diffs.push({
-                    id: await createHexHash(normalizedData.__meta.id + ":" + diffType + ":" + idObj.Type.Value + ":" + idObj.Value),
+                    id: await createHash(normalizedData.__meta.id + ":" + diffType + ":" + idObj.Type.Value + ":" + idObj.Value),
                     title: normalizedData.Title,
                     year: normalizedData.Year,
                     pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id],
