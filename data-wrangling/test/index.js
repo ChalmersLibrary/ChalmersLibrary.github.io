@@ -264,6 +264,40 @@ const TESTS = [
             return errors.join("\n")
         }
     },{
+        name: "Find differences SWEPUB_GU, all in query, no hit",
+        fn: async function () {
+            let response = await fetch("data/1.xml")
+            let textData = await response.text()
+            let normalizedData = this.normalizeSwepub(textData, "SWEPUB_GU")
+
+            let shouldQueryArr = []
+            let nestedShouldQueryArr = []
+            let findDiffsResponse = await this.findDifferences(normalizedData, (path, data) => {
+                shouldQueryArr = data?.query?.bool?.should
+                nestedShouldQueryArr = shouldQueryArr[0]?.nested?.query?.bool?.should
+                return {hits:{total:0}}
+            })
+            
+            let errors = []
+            errors.push(is(nestedShouldQueryArr, arr => arr[0]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "GUP_ID" &&       arr[0]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[1]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "PUBMED_ID" && arr[1]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[2]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "DOI" &&       arr[2]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "10.1234/fejk.1234"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[3]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "WOS_ID" &&    arr[3]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "123456789098765"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[4]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "SCOPUS_ID" && arr[4]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "12345678909"))
+            errors.push(is(nestedShouldQueryArr, arr => arr[5]?.bool?.must[0]?.term["Identifiers.Type.Value.keyword"]?.value === "ISBN" &&      arr[5]?.bool?.must[1]?.term["Identifiers.Value.keyword"]?.value === "1234567890987"))
+            errors.push(is(shouldQueryArr, arr => arr[1]?.match?.Title?.query === "Den bästa fejktiteln."))
+            errors.push(is(findDiffsResponse.diffs, "length", 6))
+            errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
+            errors.push(is(findDiffsResponse.diffs[0], "type", "NEW_ID"))
+            errors.push(is(findDiffsResponse.diffs[0], "prio", 12008))
+            errors.push(is(findDiffsResponse.diffs[0].pub, "title", "Den bästa fejktiteln."))
+            errors.push(is(findDiffsResponse.diffs[0].pub, "year", 2008))
+            errors.push(is(findDiffsResponse.diffs[0].pub, "pubType", "Artikel i vetenskaplig tidskrift"))
+            errors = errors.filter(x => x.trim())
+
+            return errors.join("\n")
+        }
+    },{
         name: "Find differences, status deleted, no crash",
         fn: async function () {
             let response = await fetch("data/2.xml")

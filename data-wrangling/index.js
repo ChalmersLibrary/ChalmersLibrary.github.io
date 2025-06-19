@@ -199,13 +199,22 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         
         res.Identifiers = []
         for (const idEl of modsEl.children.filter(x => x.name === "identifier")) {
-            let typeMatch = idEl.text.match(/type="(.*?)"/s) 
-            if (typeMatch && SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]) {
+            let typeMatch = idEl.text.match(/type="(.*?)"/s)
+            let idValue = idEl.innerText
+            let idType = typeMatch ? SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]] : undefined
+            if (name === "SWEPUB_GU" && idType === "URI") {
+                let idValueMatch = idValue.match(/[0-9]+$/)
+                if (idValueMatch) {
+                    idType = "GUP_ID"
+                    idValue = idValueMatch[0]
+                }
+            }
+            if (idType && idValue) {
                 res.Identifiers.push({
                     Type: {
-                        Value: SWEPUB_ID_TYPE_TO_RESEARCH_ID_TYPE[typeMatch[1]]
+                        Value: idType
                     },
-                    Value: idEl.innerText
+                    Value: idValue
                 })
             }
         }
