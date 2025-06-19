@@ -333,15 +333,18 @@ export async function findDifferences(normalizedData, esPost) {
                 res.diffs.push({
                     id: await createHash(normalizedData.__meta.id + ":" + diffType + ":" + idObj.Type.Value + ":" + idObj.Value),
                     created: Date.now(),
-                    title: normalizedData.Title,
-                    year: normalizedData.Year,
-                    pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id],
                     source: normalizedData.__meta,
+                    pub: {
+                        title: normalizedData.Title,
+                        year: normalizedData.Year,
+                        pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id]
+                    },
                     connected: [],
                     description: "Found no publications connected to the source data with identifier: " + idObj.Type.Value + ":" + idObj.Value + ".",
                     type: diffType,
+                    value: idObj,
                     prio: normalizedData.Year + // Higher number means more prioritized
-                        (PRIORITIZED_PUB_TYPE_IDS.includes(normalizedData.PublicationType?.Id) ? 10000 : 0)
+                        (PRIORITIZED_PUB_TYPE_IDS.includes(normalizedData.PublicationType?.Id) ? 10000 : 0),
                 })
             }
         } else if (connectedPublications.hits.total === 1) {

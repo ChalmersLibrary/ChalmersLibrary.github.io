@@ -256,9 +256,9 @@ const TESTS = [
             errors.push(is(findDiffsResponse.diffs[0].connected, "length", 0))
             errors.push(is(findDiffsResponse.diffs[0], "type", "NEW_ID"))
             errors.push(is(findDiffsResponse.diffs[0], "prio", 12008))
-            errors.push(is(findDiffsResponse.diffs[0], "title", "Den bästa fejktiteln."))
-            errors.push(is(findDiffsResponse.diffs[0], "year", 2008))
-            errors.push(is(findDiffsResponse.diffs[0], "pubType", "Artikel i vetenskaplig tidskrift"))
+            errors.push(is(findDiffsResponse.diffs[0].pub, "title", "Den bästa fejktiteln."))
+            errors.push(is(findDiffsResponse.diffs[0].pub, "year", 2008))
+            errors.push(is(findDiffsResponse.diffs[0].pub, "pubType", "Artikel i vetenskaplig tidskrift"))
             errors = errors.filter(x => x.trim())
 
             return errors.join("\n")
