@@ -332,6 +332,7 @@ export async function findDifferences(normalizedData, esPost) {
             for (const idObj of normalizedData.Identifiers) {
                 res.diffs.push({
                     id: await createHash(normalizedData.__meta.id + ":" + diffType + ":" + idObj.Type.Value + ":" + idObj.Value),
+                    created: Date.now(),
                     title: normalizedData.Title,
                     year: normalizedData.Year,
                     pubType: RESEARCH_PUB_TYPE_ID_TO_NAME[normalizedData.PublicationType?.Id],
