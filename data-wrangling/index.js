@@ -225,8 +225,9 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
         res.PublicationType = (Id => Id ? {Id} : undefined)(SWEPUB_OUTPUT_AND_CONTENT_TYPE_TO_RESEARCH_PUB_TYPE[outputType + ":" + contentType])
 
         res.Persons = []
-        for (const personEl of modsEl.children.filter(x => x.name === "name" && x.attrText.match(/type="personal"/))) {
+        for (const [personIndex, personEl] of modsEl.children.filter(x => x.name === "name" && x.attrText.match(/type="personal"/)).entries()) {
             let personOrgRole = {
+                Order: personIndex + 1,
                 PersonData: {
                     FirstName: (fn => fn && decodePossiblyUnsafeEntities ? fn.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : fn)((personEl.innerText.match(/<namePart type="given">(.*?)<\/namePart>/s) || [])[1]),
                     LastName: (ln => ln && decodePossiblyUnsafeEntities ? ln.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : ln)((personEl.innerText.match(/<namePart type="family">(.*?)<\/namePart>/s) || [])[1]),
@@ -237,17 +238,30 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
             let affOrgLookup = new Map()
             for (const affOrgEl of personEl.children.filter(x => x.name === "affiliation")) {
                 let id = (affOrgEl.attrText.match(/valueURI="(.*?)"/s) || [])[1]
+                let authority = (affOrgEl.attrText.match(/authority="(.*?)"/s) || [])[1]
                 if (id) {
-                    let affOrg = affOrgLookup.get(id) || {OrganizationData:{Identifiers:[]}}
+                    let affOrg = affOrgLookup.get(id) || {
+                        raw:{
+                            id,
+                            authority
+                        },
+                        norm:{
+                            OrganizationData:{
+                                Identifiers:[],
+                                OrganizationParents:[]
+                            }
+                        },
+                        children:[]
+                    }
                     let lang = (affOrgEl.attrText.match(/lang="(.*?)"/s) || [])[1]
                     if (lang === "swe") {
-                        affOrg.OrganizationData.NameSwe = affOrgEl.innerText
+                        affOrg.norm.OrganizationData.NameSwe = affOrgEl.innerText
                     } else if (lang === "eng") {
-                        affOrg.OrganizationData.NameEng = affOrgEl.innerText
+                        affOrg.norm.OrganizationData.NameEng = affOrgEl.innerText
                     }
 
-                    if (!affOrg.OrganizationData.Identifiers.find(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === id)) {
-                        affOrg.OrganizationData.Identifiers.push({
+                    if (!affOrg.norm.OrganizationData.Identifiers.find(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === id)) {
+                        affOrg.norm.OrganizationData.Identifiers.push({
                             Type: {
                                 Value: "SWEPUB_AFF_ID"
                             },
@@ -258,8 +272,24 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
                     affOrgLookup.set(id, affOrg)
                 }
             }
-            personOrgRole.Organizations = [...affOrgLookup.values()]
+
+            // Fill in children and parents
+            for (const [affId, affOrg] of affOrgLookup.entries()) {
+                if (affOrg.raw.authority) {
+                    let authorityOrg = affOrgLookup.get(affOrg.raw.authority)
+                    if (authorityOrg) {
+                        authorityOrg.children.push(affOrg)
+                        let clone = structuredClone(authorityOrg.norm)
+                        clone.ParentOrganizationData = clone.OrganizationData
+                        delete clone.OrganizationData
+                        affOrg.norm.OrganizationData.OrganizationParents.push(clone)
+                    }
+                }
+            }
             
+            // Create final list containing all the leaf items
+            personOrgRole.Organizations = [...affOrgLookup.values()].filter(affOrg => affOrg.children.length === 0).map(affOrg => affOrg.norm)
+
             res.Persons.push(personOrgRole)
         }
     }
