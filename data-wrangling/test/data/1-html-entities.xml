@@ -39,7 +39,7 @@
                 </role>
                 <affiliation lang="swe" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fejkuniversitet</affiliation>
                 <affiliation lang="eng" authority="kb.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se">Fake University</affiliation>
-                <affiliation lang="swe" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0001">Institutionen f&#246;r tester som är fejk</affiliation>
+                <affiliation lang="swe" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0001">Institutionen f&#246;r tester som är fejk &#229;&#228;&#246;&#197;&#196;&#214; &#8217; &#13;</affiliation>
                 <affiliation lang="eng" authority="fejku.lib.chalmers.se" xsi:type="mods:stringPlusLanguagePlusAuthority" valueURI="fejku.lib.chalmers.se/0001">Department of testing that is fake</affiliation>
             </name>
             <name type="personal" authority="fejku">

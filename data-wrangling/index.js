@@ -255,9 +255,9 @@ export function normalizeSwepub(data, name, decodePossiblyUnsafeEntities = false
                     }
                     let lang = (affOrgEl.attrText.match(/lang="(.*?)"/s) || [])[1]
                     if (lang === "swe") {
-                        affOrg.norm.OrganizationData.NameSwe = affOrgEl.innerText
+                        affOrg.norm.OrganizationData.NameSwe = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : t)(affOrgEl.innerText)
                     } else if (lang === "eng") {
-                        affOrg.norm.OrganizationData.NameEng = affOrgEl.innerText
+                        affOrg.norm.OrganizationData.NameEng = (t => t && decodePossiblyUnsafeEntities ? t.replace(/&#([0-9]{1,5});/g, (_,x) => String.fromCharCode(x)) : t)(affOrgEl.innerText)
                     }
 
                     if (!affOrg.norm.OrganizationData.Identifiers.find(idObj => idObj.Type.Value === "SWEPUB_AFF_ID" && idObj.Value === id)) {

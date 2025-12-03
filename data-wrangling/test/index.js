@@ -228,6 +228,7 @@ const TESTS = [
             errors.push(is(normalizedData, pub => pub.Title === "Den bästa fejktiteln. åäöÅÄÖ ’ \r"))
             errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.FirstName === "Fejk åäöÅÄÖ ’ \r"))
             errors.push(is(normalizedData, pub => pub.Persons[0].PersonData.LastName === "Fejksson åäöÅÄÖ ’ \r"))
+            errors.push(is(normalizedData, pub => pub.Persons[0].Organizations[0].OrganizationData.NameSwe === "Institutionen för tester som är fejk åäöÅÄÖ ’ \r"))
         }, "FEJKKÄLLAN", true)
     },{
         name: "Find differences, all in query, no hit",
